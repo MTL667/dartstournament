@@ -162,7 +162,7 @@ export default function AdminPage() {
           <h1 className="text-4xl font-bold text-gray-900">⚙️ Toernooi Beheer</h1>
           <Link 
             href="/"
-            className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition-colors"
+            className="btn-glass-neutral px-6 py-2 rounded-xl"
           >
             ← Terug
           </Link>
@@ -170,7 +170,7 @@ export default function AdminPage() {
 
         <button
           onClick={() => setShowCreateForm(!showCreateForm)}
-          className="mb-6 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+          className="mb-6 btn-glass-primary px-6 py-3 rounded-xl font-semibold"
         >
           {showCreateForm ? '❌ Annuleer' : '➕ Nieuw Toernooi'}
         </button>
@@ -300,7 +300,7 @@ export default function AdminPage() {
                         <button
                           type="button"
                           onClick={() => removePlayerField(index)}
-                          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg"
+                          className="px-4 py-2 btn-glass-danger rounded-xl"
                         >
                           ❌
                         </button>
@@ -321,7 +321,7 @@ export default function AdminPage() {
 
               <button
                 type="submit"
-                className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition-colors"
+                className="w-full btn-glass-primary py-3 rounded-xl font-semibold"
               >
                 Toernooi Aanmaken
               </button>
@@ -361,14 +361,14 @@ export default function AdminPage() {
                     {tournament.status === 'setup' && (
                       <button
                         onClick={() => handleStartTournament(tournament.id)}
-                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
+                        className="btn-glass-primary px-4 py-2 rounded-xl"
                       >
                         ▶️ Start
                       </button>
                     )}
                     <button
                       onClick={() => handleDeleteTournament(tournament.id)}
-                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors"
+                      className="btn-glass-danger px-4 py-2 rounded-xl"
                     >
                       🗑️
                     </button>

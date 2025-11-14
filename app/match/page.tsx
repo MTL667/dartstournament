@@ -206,7 +206,7 @@ export default function MatchPage() {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-lg font-bold text-xl transition-colors"
+              className="w-full btn-glass-info py-4 rounded-xl font-bold text-xl"
             >
               🔓 Ontgrendelen
             </button>
@@ -232,7 +232,7 @@ export default function MatchPage() {
             <h1 className="text-4xl font-bold text-gray-900">Selecteer Match</h1>
             <button
               onClick={() => setIsUnlocked(false)}
-              className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg"
+              className="btn-glass-danger px-6 py-2 rounded-xl"
             >
               🔒 Vergrendel
             </button>
@@ -345,12 +345,12 @@ export default function MatchPage() {
 
           <div className="flex justify-center gap-4 mb-6">
             {dartScores.map((score, index) => (
-              <div key={index} className="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center text-3xl font-bold">
+              <div key={index} className="w-20 h-20 btn-glass-primary rounded-full flex items-center justify-center text-3xl font-bold">
                 {score}
               </div>
             ))}
             {Array.from({ length: 3 - dartScores.length }).map((_, index) => (
-              <div key={`empty-${index}`} className="w-20 h-20 bg-gray-700 rounded-full flex items-center justify-center text-3xl">
+              <div key={`empty-${index}`} className="w-20 h-20 btn-glass rounded-full flex items-center justify-center text-3xl">
                 -
               </div>
             ))}
