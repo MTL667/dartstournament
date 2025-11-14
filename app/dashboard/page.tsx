@@ -118,7 +118,8 @@ export default function DashboardPage() {
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-8 py-8">
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-7xl mx-auto px-8 py-8">
         {tournaments.length === 0 ? (
           <div className="text-center py-20">
             <div className="text-6xl mb-4">🎯</div>
@@ -279,6 +280,7 @@ export default function DashboardPage() {
             )}
           </div>
         )}
+      </div>
       </div>
       </div>
     </div>
