@@ -88,9 +88,11 @@ export default function MatchPage() {
       
       const allMatches: Match[] = [];
       tournaments.forEach((tournament: any) => {
-        tournament.matches
-          .filter((m: Match) => m.status === 'active' || m.status === 'pending')
-          .forEach((m: Match) => allMatches.push(m));
+        if (tournament.matches && Array.isArray(tournament.matches)) {
+          tournament.matches
+            .filter((m: Match) => m.status === 'active' || m.status === 'pending')
+            .forEach((m: Match) => allMatches.push(m));
+        }
       });
       
       setMatches(allMatches);
@@ -100,9 +102,11 @@ export default function MatchPage() {
         const updated = allMatches.find(m => m.id === selectedMatch.id);
         if (updated) {
           setSelectedMatch(updated);
-          const activeSet = updated.sets.find(s => s.status === 'active');
-          const activeLeg = activeSet?.legs.find(l => l.status === 'active');
-          setCurrentLeg(activeLeg || null);
+          if (updated.sets && Array.isArray(updated.sets)) {
+            const activeSet = updated.sets.find(s => s.status === 'active');
+            const activeLeg = activeSet?.legs?.find(l => l.status === 'active');
+            setCurrentLeg(activeLeg || null);
+          }
         }
       }
     } catch (error) {
@@ -116,9 +120,11 @@ export default function MatchPage() {
     const fullMatch = await res.json();
     setSelectedMatch(fullMatch);
     
-    const activeSet = fullMatch.sets.find((s: Set) => s.status === 'active');
-    const activeLeg = activeSet?.legs.find((l: Leg) => l.status === 'active');
-    setCurrentLeg(activeLeg || null);
+    if (fullMatch.sets && Array.isArray(fullMatch.sets)) {
+      const activeSet = fullMatch.sets.find((s: Set) => s.status === 'active');
+      const activeLeg = activeSet?.legs?.find((l: Leg) => l.status === 'active');
+      setCurrentLeg(activeLeg || null);
+    }
     setDartScores([]);
   };
 
@@ -245,18 +251,22 @@ export default function MatchPage() {
                   key={match.id}
                   onClick={() => selectMatch(match)}
                   className="w-full bg-white hover:bg-gray-50 rounded-lg p-6 shadow-lg transition-all hover:scale-102 text-left"
+                  disabled={!match.player1 || !match.player2}
                 >
                   <div className="flex justify-between items-center">
                     <div>
                       <div className="text-2xl font-bold text-gray-900 mb-2">
-                        {match.player1.name} vs {match.player2.name}
+                        {match.player1?.name || 'TBD'} vs {match.player2?.name || 'TBD'}
                       </div>
-                      <div className="text-gray-600">{match.tournament.name}</div>
+                      <div className="text-gray-600">{match.tournament?.name || 'Tournament'}</div>
                     </div>
                     <div className="text-4xl font-bold text-gray-900">
                       {match.player1Sets} - {match.player2Sets}
                     </div>
                   </div>
+                  {(!match.player1 || !match.player2) && (
+                    <div className="text-sm text-gray-500 mt-2">Wacht op spelers...</div>
+                  )}
                 </button>
               ))}
             </div>
@@ -268,11 +278,11 @@ export default function MatchPage() {
 
   // Score entry screen
   const currentScore = dartScores.reduce((sum, score) => sum + score, 0);
-  const isPlayer1Turn = currentLeg?.currentPlayer === selectedMatch.player1.id;
-  const currentPlayer = isPlayer1Turn ? selectedMatch.player1 : selectedMatch.player2;
+  const isPlayer1Turn = currentLeg?.currentPlayer === selectedMatch?.player1?.id;
+  const currentPlayer = isPlayer1Turn ? selectedMatch?.player1 : selectedMatch?.player2;
   const currentPlayerScore = isPlayer1Turn ? currentLeg?.player1Score : currentLeg?.player2Score;
 
-  const activeSet = selectedMatch.sets.find(s => s.status === 'active');
+  const activeSet = selectedMatch?.sets?.find(s => s.status === 'active');
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4">
@@ -285,7 +295,7 @@ export default function MatchPage() {
           >
             ← Matches
           </button>
-          <h1 className="text-2xl font-bold">{selectedMatch.tournament.name}</h1>
+          <h1 className="text-2xl font-bold">{selectedMatch?.tournament?.name || 'Match'}</h1>
           <button
             onClick={() => setIsUnlocked(false)}
             className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg font-semibold"
@@ -300,18 +310,18 @@ export default function MatchPage() {
             <div className={`text-center p-6 rounded-xl ${
               isPlayer1Turn ? 'bg-green-600' : 'bg-gray-700'
             }`}>
-              <div className="text-3xl font-bold mb-2">{selectedMatch.player1.name}</div>
+              <div className="text-3xl font-bold mb-2">{selectedMatch?.player1?.name || 'TBD'}</div>
               <div className="text-7xl font-bold">{currentLeg?.player1Score || 0}</div>
-              <div className="text-xl mt-2">Sets: {selectedMatch.player1Sets}</div>
+              <div className="text-xl mt-2">Sets: {selectedMatch?.player1Sets || 0}</div>
               {activeSet && <div className="text-lg">Legs: {activeSet.player1Legs}</div>}
             </div>
 
             <div className={`text-center p-6 rounded-xl ${
               !isPlayer1Turn ? 'bg-green-600' : 'bg-gray-700'
             }`}>
-              <div className="text-3xl font-bold mb-2">{selectedMatch.player2.name}</div>
+              <div className="text-3xl font-bold mb-2">{selectedMatch?.player2?.name || 'TBD'}</div>
               <div className="text-7xl font-bold">{currentLeg?.player2Score || 0}</div>
-              <div className="text-xl mt-2">Sets: {selectedMatch.player2Sets}</div>
+              <div className="text-xl mt-2">Sets: {selectedMatch?.player2Sets || 0}</div>
               {activeSet && <div className="text-lg">Legs: {activeSet.player2Legs}</div>}
             </div>
           </div>
