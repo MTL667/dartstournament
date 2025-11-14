@@ -430,7 +430,7 @@ export default function MatchPage() {
   const activeSet = selectedMatch?.sets?.find(s => s.status === 'active');
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-2 md:p-4">
+    <div className="min-h-screen h-full bg-gray-900 text-white p-2 md:p-4 overflow-y-auto">
       <div className="max-w-7xl mx-auto">
         {/* Header - Compact */}
         <div className="mb-4 space-y-2">
