@@ -14,6 +14,8 @@ interface Match {
   tournament: Tournament;
   player1: Player;
   player2: Player;
+  player1Id: string;
+  player2Id: string;
   player1Sets: number;
   player2Sets: number;
   currentPlayer: string;
