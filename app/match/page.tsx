@@ -228,6 +228,88 @@ export default function MatchPage() {
     setTurnScore(score.toString());
   };
 
+  const undoLastThrow = async () => {
+    if (!selectedMatch || !currentLeg) return;
+    
+    if (!confirm('Weet je zeker dat je de laatste beurt wilt verwijderen?')) return;
+
+    try {
+      // Get the last throw
+      const throws = currentLeg.throws || [];
+      if (throws.length === 0) {
+        alert('Geen beurten om te verwijderen');
+        return;
+      }
+
+      const lastThrow = throws[throws.length - 1];
+      
+      // Delete the last throw
+      const res = await fetch(`/api/throws/${lastThrow.id}`, {
+        method: 'DELETE',
+      });
+
+      if (res.ok) {
+        // Refresh match data
+        const updatedRes = await fetch(`/api/matches/${selectedMatch.id}`);
+        const updatedMatch = await updatedRes.json();
+        setSelectedMatch(updatedMatch);
+        
+        if (updatedMatch.sets && Array.isArray(updatedMatch.sets)) {
+          const activeSet = updatedMatch.sets.find((s: any) => s.status === 'active');
+          const activeLeg = activeSet?.legs?.find((l: any) => l.status === 'active');
+          setCurrentLeg(activeLeg || null);
+        }
+        
+        await fetchMatches();
+      } else {
+        alert('Fout bij verwijderen van beurt');
+      }
+    } catch (error) {
+      console.error('Error undoing throw:', error);
+      alert('Fout bij verwijderen van beurt: ' + error);
+    }
+  };
+
+  const switchStartingPlayer = async () => {
+    if (!selectedMatch) return;
+    
+    if (!confirm('Wil je de startspeler voor deze match wijzigen?')) return;
+
+    try {
+      const newStartingPlayer = selectedMatch.startingPlayer === selectedMatch.player1Id 
+        ? selectedMatch.player2Id 
+        : selectedMatch.player1Id;
+
+      const res = await fetch(`/api/matches/${selectedMatch.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          startingPlayer: newStartingPlayer,
+          currentPlayer: newStartingPlayer,
+        }),
+      });
+
+      if (res.ok) {
+        // Refresh match data
+        const updatedRes = await fetch(`/api/matches/${selectedMatch.id}`);
+        const updatedMatch = await updatedRes.json();
+        setSelectedMatch(updatedMatch);
+        
+        if (updatedMatch.sets && Array.isArray(updatedMatch.sets)) {
+          const activeSet = updatedMatch.sets.find((s: any) => s.status === 'active');
+          const activeLeg = activeSet?.legs?.find((l: any) => l.status === 'active');
+          setCurrentLeg(activeLeg || null);
+        }
+        
+        await fetchMatches();
+        alert(`Startspeler gewijzigd naar: ${updatedMatch.startingPlayer === updatedMatch.player1Id ? updatedMatch.player1?.name : updatedMatch.player2?.name}`);
+      }
+    } catch (error) {
+      console.error('Error switching starting player:', error);
+      alert('Fout bij wijzigen startspeler: ' + error);
+    }
+  };
+
   // Passcode screen
   if (!isUnlocked) {
     return (
@@ -338,20 +420,38 @@ export default function MatchPage() {
     <div className="min-h-screen bg-gray-900 text-white p-2 md:p-4">
       <div className="max-w-7xl mx-auto">
         {/* Header - Compact */}
-        <div className="flex justify-between items-center mb-4 bg-gray-800 rounded-xl p-3">
-          <button
-            onClick={() => setSelectedMatch(null)}
-            className="btn-glass-neutral px-4 py-2 rounded-xl font-semibold text-sm"
-          >
-            ← Matches
-          </button>
-          <h1 className="text-lg md:text-xl font-bold truncate px-2">{selectedMatch?.tournament?.name || 'Match'}</h1>
-          <button
-            onClick={() => setIsUnlocked(false)}
-            className="btn-glass-danger px-4 py-2 rounded-xl font-semibold text-sm"
-          >
-            🔒
-          </button>
+        <div className="mb-4 space-y-2">
+          <div className="flex justify-between items-center bg-gray-800 rounded-xl p-3">
+            <button
+              onClick={() => setSelectedMatch(null)}
+              className="btn-glass-neutral px-4 py-2 rounded-xl font-semibold text-sm"
+            >
+              ← Matches
+            </button>
+            <h1 className="text-lg md:text-xl font-bold truncate px-2">{selectedMatch?.tournament?.name || 'Match'}</h1>
+            <button
+              onClick={() => setIsUnlocked(false)}
+              className="btn-glass-danger px-4 py-2 rounded-xl font-semibold text-sm"
+            >
+              🔒
+            </button>
+          </div>
+          
+          {/* Referee Tools */}
+          <div className="flex gap-2">
+            <button
+              onClick={undoLastThrow}
+              className="flex-1 btn-glass-warning py-3 rounded-xl font-semibold text-sm hover:scale-105 transition-all"
+            >
+              ↶ Laatste beurt ongedaan maken
+            </button>
+            <button
+              onClick={switchStartingPlayer}
+              className="flex-1 btn-glass-info py-3 rounded-xl font-semibold text-sm hover:scale-105 transition-all"
+            >
+              🔄 Wissel startspeler
+            </button>
+          </div>
         </div>
 
         {/* Scoreboard - Prominent en iPad-vriendelijk */}
