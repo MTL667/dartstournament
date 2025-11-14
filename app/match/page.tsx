@@ -291,14 +291,14 @@ export default function MatchPage() {
         <div className="flex justify-between items-center mb-6">
           <button
             onClick={() => setSelectedMatch(null)}
-            className="bg-gray-700 hover:bg-gray-600 px-6 py-3 rounded-lg font-semibold"
+            className="btn-glass-neutral px-6 py-3 rounded-xl font-semibold"
           >
             ← Matches
           </button>
           <h1 className="text-2xl font-bold">{selectedMatch?.tournament?.name || 'Match'}</h1>
           <button
             onClick={() => setIsUnlocked(false)}
-            className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg font-semibold"
+            className="btn-glass-danger px-6 py-3 rounded-xl font-semibold"
           >
             🔒
           </button>
@@ -359,14 +359,14 @@ export default function MatchPage() {
           <div className="flex gap-4">
             <button
               onClick={clearDarts}
-              className="flex-1 bg-red-600 hover:bg-red-700 py-6 rounded-xl font-bold text-2xl"
+              className="flex-1 btn-glass-danger py-6 rounded-xl font-bold text-2xl"
             >
               ❌ Wissen
             </button>
             <button
               onClick={submitThrow}
               disabled={dartScores.length === 0}
-              className="flex-1 bg-green-600 hover:bg-green-700 py-6 rounded-xl font-bold text-2xl disabled:bg-gray-600 disabled:cursor-not-allowed"
+              className="flex-1 btn-glass-primary py-6 rounded-xl font-bold text-2xl disabled:opacity-50 disabled:cursor-not-allowed"
             >
               ✅ Bevestigen
             </button>
@@ -380,7 +380,7 @@ export default function MatchPage() {
               key={num}
               onClick={() => handleDartScore(num)}
               disabled={dartScores.length >= 3}
-              className="aspect-square bg-blue-600 hover:bg-blue-700 rounded-xl text-3xl font-bold disabled:bg-gray-700 disabled:cursor-not-allowed transition-all hover:scale-105"
+              className="aspect-square btn-glass-info rounded-xl text-3xl font-bold disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105"
             >
               {num}
             </button>
@@ -388,14 +388,14 @@ export default function MatchPage() {
           <button
             onClick={() => handleDartScore(25)}
             disabled={dartScores.length >= 3}
-            className="aspect-square bg-red-600 hover:bg-red-700 rounded-xl text-2xl font-bold disabled:bg-gray-700 disabled:cursor-not-allowed col-span-2"
+            className="aspect-square btn-glass-danger rounded-xl text-2xl font-bold disabled:opacity-30 disabled:cursor-not-allowed col-span-2"
           >
             Bull 25
           </button>
           <button
             onClick={() => handleDartScore(50)}
             disabled={dartScores.length >= 3}
-            className="aspect-square bg-red-700 hover:bg-red-800 rounded-xl text-2xl font-bold disabled:bg-gray-700 disabled:cursor-not-allowed col-span-2"
+            className="aspect-square btn-glass-danger rounded-xl text-2xl font-bold disabled:opacity-30 disabled:cursor-not-allowed col-span-2"
           >
             Bull 50
           </button>
@@ -405,14 +405,14 @@ export default function MatchPage() {
           <button
             onClick={() => handleDartScore(0)}
             disabled={dartScores.length >= 3}
-            className="bg-gray-600 hover:bg-gray-500 py-6 rounded-xl text-2xl font-bold disabled:bg-gray-700 disabled:cursor-not-allowed"
+            className="btn-glass-neutral py-6 rounded-xl text-2xl font-bold disabled:opacity-30 disabled:cursor-not-allowed"
           >
             Miss (0)
           </button>
           <button
             onClick={() => handleDartScore(0)}
             disabled={dartScores.length >= 3}
-            className="bg-orange-600 hover:bg-orange-700 py-6 rounded-xl text-2xl font-bold disabled:bg-gray-700 disabled:cursor-not-allowed"
+            className="btn-glass-warning py-6 rounded-xl text-2xl font-bold disabled:opacity-30 disabled:cursor-not-allowed"
           >
             Bust (0)
           </button>
