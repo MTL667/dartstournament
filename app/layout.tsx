@@ -20,11 +20,13 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: 'cover',
+  themeColor: '#111827',
 };
 
 export const metadata: Metadata = {
   title: "Darts Tournament",
   description: "Organize and track darts tournaments",
+  manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -42,12 +44,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="nl" className={`${inter.variable} ${outfit.variable}`}>
-      <head>
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="theme-color" content="#111827" />
-        <link rel="manifest" href="/manifest.json" />
-      </head>
       <body className={`${inter.className} antialiased overscroll-none`}>
         {children}
       </body>
