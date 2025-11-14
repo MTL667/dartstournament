@@ -218,11 +218,13 @@ export default function DashboardPage() {
                         </div>
 
                         {/* Match Format Info */}
-                        <div className="mt-8 pt-8 border-t border-gray-700 text-center">
-                          <div className="text-xl text-gray-400">
-                            {match.tournament.format} • First to {match.tournament.legs} legs
+                        {match.tournament && (
+                          <div className="mt-8 pt-8 border-t border-gray-700 text-center">
+                            <div className="text-xl text-gray-400">
+                              {match.tournament.format} • First to {match.tournament.legs} legs
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </div>
                     </div>
                   );
