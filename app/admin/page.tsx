@@ -49,9 +49,10 @@ export default function AdminPage() {
     try {
       const res = await fetch('/api/tournaments');
       const data = await res.json();
-      setTournaments(data);
+      setTournaments(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to fetch tournaments:', error);
+      setTournaments([]);
     }
   };
 
@@ -376,24 +377,32 @@ export default function AdminPage() {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <h4 className="font-semibold text-gray-700 mb-2">Spelers ({tournament.players.length})</h4>
+                    <h4 className="font-semibold text-gray-700 mb-2">
+                      Spelers ({tournament.players?.length || 0})
+                    </h4>
                     <div className="space-y-1">
-                      {tournament.players.map((player) => (
-                        <div key={player.id} className="text-gray-600">
-                          👤 {player.name}
-                        </div>
-                      ))}
+                      {tournament.players && tournament.players.length > 0 ? (
+                        tournament.players.map((player) => (
+                          <div key={player.id} className="text-gray-600">
+                            👤 {player.name}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-gray-400 text-sm">Geen spelers</div>
+                      )}
                     </div>
                   </div>
 
-                  {tournament.matches.length > 0 && (
+                  {tournament.matches && tournament.matches.length > 0 && (
                     <div>
-                      <h4 className="font-semibold text-gray-700 mb-2">Matches ({tournament.matches.length})</h4>
+                      <h4 className="font-semibold text-gray-700 mb-2">
+                        Matches ({tournament.matches.length})
+                      </h4>
                       <div className="space-y-2">
                         {tournament.matches.map((match) => (
                           <div key={match.id} className="bg-gray-50 p-3 rounded">
                             <div className="text-sm">
-                              {match.player1.name} vs {match.player2.name}
+                              {match.player1?.name || 'TBD'} vs {match.player2?.name || 'TBD'}
                             </div>
                             <div className="text-xs text-gray-500">
                               Status: {match.status === 'active' ? '🟢 Actief' : 
