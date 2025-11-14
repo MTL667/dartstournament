@@ -573,33 +573,56 @@ export default function MatchPage() {
             </button>
           </div>
 
-          {/* Quick Score Buttons - Groot en Touch-vriendelijk */}
+          {/* Numpad - iPad Touch-vriendelijk */}
           <div className="bg-gray-900/50 rounded-2xl p-4">
-            <div className="text-center text-xl font-semibold text-gray-300 mb-4">⚡ Snelkeuze</div>
-            <div className="grid grid-cols-5 gap-3">
-              {[26, 41, 45, 60, 81, 85, 100, 121, 140, 180].map((score) => (
+            <div className="text-center text-xl font-semibold text-gray-300 mb-4">🔢 Numpad</div>
+            <div className="grid grid-cols-3 gap-3">
+              {/* Numbers 1-9 */}
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                 <button
-                  key={score}
-                  onClick={() => quickScore(score)}
-                  className="btn-glass-info py-6 rounded-xl font-bold text-2xl hover:scale-110 transition-all active:scale-95"
+                  key={num}
+                  onClick={() => setTurnScore(prev => prev + num.toString())}
+                  className="btn-glass-info py-8 rounded-2xl font-black text-5xl hover:scale-110 transition-all active:scale-95 shadow-lg"
                 >
-                  {score}
+                  {num}
                 </button>
               ))}
+              
+              {/* Bottom row: Backspace, 0, Clear */}
+              <button
+                onClick={() => setTurnScore(prev => prev.slice(0, -1))}
+                className="btn-glass-warning py-8 rounded-2xl font-bold text-2xl hover:scale-110 transition-all active:scale-95 shadow-lg"
+              >
+                ⌫<br/>Back
+              </button>
+              <button
+                onClick={() => setTurnScore(prev => prev + '0')}
+                className="btn-glass-info py-8 rounded-2xl font-black text-5xl hover:scale-110 transition-all active:scale-95 shadow-lg"
+              >
+                0
+              </button>
+              <button
+                onClick={() => setTurnScore('')}
+                className="btn-glass-danger py-8 rounded-2xl font-bold text-2xl hover:scale-110 transition-all active:scale-95 shadow-lg"
+              >
+                ❌<br/>Clear
+              </button>
             </div>
-            <div className="grid grid-cols-2 gap-3 mt-3">
-              <button
-                onClick={() => quickScore(0)}
-                className="btn-glass-neutral py-6 rounded-xl font-bold text-xl hover:scale-105 transition-all"
-              >
-                ⭕ Miss (0)
-              </button>
-              <button
-                onClick={() => quickScore(0)}
-                className="btn-glass-warning py-6 rounded-xl font-bold text-xl hover:scale-105 transition-all"
-              >
-                💥 Bust (0)
-              </button>
+            
+            {/* Quick score shortcuts */}
+            <div className="mt-4 pt-4 border-t border-gray-700">
+              <div className="text-center text-sm font-semibold text-gray-400 mb-2">⚡ Snelkeuze</div>
+              <div className="grid grid-cols-4 gap-2">
+                {[26, 60, 81, 100, 140, 180].map((score) => (
+                  <button
+                    key={score}
+                    onClick={() => quickScore(score)}
+                    className="btn-glass-neutral py-4 rounded-xl font-bold text-lg hover:scale-105 transition-all"
+                  >
+                    {score}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
