@@ -10,6 +10,7 @@ interface Tournament {
   type: string;
   format: string;
   sets: number;
+  legs: number;
   startScore: number;
   status: string;
   matches: Match[];
