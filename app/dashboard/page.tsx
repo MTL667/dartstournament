@@ -108,7 +108,7 @@ export default function DashboardPage() {
           <h1 className="text-4xl font-bold">🎯 Live Darts Dashboard</h1>
           <Link 
             href="/"
-            className="bg-white text-green-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+            className="btn-glass-neutral px-6 py-2 rounded-xl font-semibold"
           >
             ← Home
           </Link>
@@ -124,7 +124,7 @@ export default function DashboardPage() {
             <p className="text-gray-400 mb-8">Start een toernooi in het admin panel</p>
             <Link 
               href="/admin"
-              className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold inline-block transition-colors"
+              className="btn-glass-primary px-8 py-3 rounded-xl font-semibold inline-block"
             >
               Ga naar Admin
             </Link>
@@ -138,10 +138,10 @@ export default function DashboardPage() {
                   <button
                     key={tournament.id}
                     onClick={() => setSelectedTournament(tournament)}
-                    className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
+                    className={`px-6 py-3 rounded-xl font-semibold transition-all ${
                       selectedTournament?.id === tournament.id
-                        ? 'bg-green-600 text-white'
-                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                        ? 'btn-glass-primary'
+                        : 'btn-glass-neutral'
                     }`}
                   >
                     {tournament.name}
