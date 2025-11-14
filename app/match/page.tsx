@@ -431,10 +431,11 @@ export default function MatchPage() {
 
   return (
     <div className="h-screen w-full bg-gray-900 text-white flex flex-col overflow-hidden">
-      <div className="flex-1 overflow-y-auto p-2 md:p-4">
-        <div className="max-w-7xl mx-auto">
+      <div className="flex-1 overflow-y-auto">
+        <div className="h-full flex flex-col p-2 md:p-4">
+          <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col">
         {/* Header - Compact */}
-        <div className="mb-4 space-y-2">
+        <div className="mb-2 space-y-2 flex-shrink-0">
           <div className="flex justify-between items-center bg-gray-800 rounded-xl p-3">
             <button
               onClick={() => setSelectedMatch(null)}
@@ -469,7 +470,7 @@ export default function MatchPage() {
         </div>
 
         {/* Scoreboard - Prominent en iPad-vriendelijk */}
-        <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-4 mb-4 shadow-2xl border-2 border-gray-700">
+        <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-4 mb-2 shadow-2xl border-2 border-gray-700 flex-shrink-0">
           <div className="grid grid-cols-2 gap-4">
             {/* Player 1 */}
             <div className={`text-center p-6 rounded-2xl transition-all duration-300 ${
@@ -518,9 +519,9 @@ export default function MatchPage() {
         </div>
 
         {/* Score Input - iPad Optimized */}
-        <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-4 md:p-6 shadow-2xl border-2 border-gray-700">
+        <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-4 md:p-6 shadow-2xl border-2 border-gray-700 flex-1 flex flex-col overflow-y-auto">
           {/* Score Input Field */}
-          <div className="mb-6">
+          <div className="mb-4 flex-shrink-0">
             <label className="block text-2xl md:text-3xl font-bold text-center mb-4 text-green-400">
               Voer score in voor {currentPlayer?.name}
             </label>
@@ -556,7 +557,7 @@ export default function MatchPage() {
           </div>
 
           {/* Action Buttons - Extra Groot */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-2 gap-4 mb-4 flex-shrink-0">
             <button
               onClick={() => setTurnScore('')}
               className="btn-glass-danger py-8 rounded-2xl font-bold text-3xl shadow-xl hover:scale-105 transition-all"
@@ -575,9 +576,9 @@ export default function MatchPage() {
           </div>
 
           {/* Numpad - iPad Touch-vriendelijk */}
-          <div className="bg-gray-900/50 rounded-2xl p-4">
-            <div className="text-center text-xl font-semibold text-gray-300 mb-4">🔢 Numpad</div>
-            <div className="grid grid-cols-3 gap-3">
+          <div className="bg-gray-900/50 rounded-2xl p-4 flex-1 flex flex-col">
+            <div className="text-center text-xl font-semibold text-gray-300 mb-3 flex-shrink-0">🔢 Numpad</div>
+            <div className="grid grid-cols-3 gap-3 flex-shrink-0">
               {/* Numbers 1-9 */}
               {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                 <button
@@ -611,7 +612,7 @@ export default function MatchPage() {
             </div>
             
             {/* Quick score shortcuts */}
-            <div className="mt-4 pt-4 border-t border-gray-700">
+            <div className="mt-3 pt-3 border-t border-gray-700 flex-shrink-0">
               <div className="text-center text-sm font-semibold text-gray-400 mb-2">⚡ Snelkeuze</div>
               <div className="grid grid-cols-4 gap-2">
                 {[26, 60, 81, 100, 140, 180].map((score) => (
@@ -628,7 +629,8 @@ export default function MatchPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+      </div>
     </div>
   );
 }
