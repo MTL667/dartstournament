@@ -181,7 +181,7 @@ export default function DashboardPage() {
                         <div className="grid grid-cols-3 gap-8 items-center">
                           {/* Player 1 */}
                           <div className={`text-center p-6 rounded-xl transition-all ${
-                            currentLeg?.currentPlayer === match.player1?.id 
+                            currentLeg && currentLeg.currentPlayer === match.player1?.id 
                               ? 'bg-green-600 scale-105 shadow-xl' 
                               : 'bg-gray-700'
                           }`}>
@@ -210,7 +210,7 @@ export default function DashboardPage() {
 
                           {/* Player 2 */}
                           <div className={`text-center p-6 rounded-xl transition-all ${
-                            currentLeg?.currentPlayer === match.player2?.id 
+                            currentLeg && currentLeg.currentPlayer === match.player2?.id 
                               ? 'bg-green-600 scale-105 shadow-xl' 
                               : 'bg-gray-700'
                           }`}>
@@ -224,7 +224,7 @@ export default function DashboardPage() {
                         </div>
 
                         {/* Set History */}
-                        {match.sets.length > 0 && (
+                        {match.sets && match.sets.length > 0 && (
                           <div className="mt-8 pt-8 border-t border-gray-700">
                             <h4 className="text-xl font-bold mb-4 text-gray-400">Set Geschiedenis</h4>
                             <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
@@ -260,7 +260,7 @@ export default function DashboardPage() {
             )}
 
             {/* All Matches (for non-bracket tournaments or summary) */}
-            {selectedTournament && selectedTournament.matches.length > 0 && selectedTournament.type !== 'double-elimination' && (
+            {selectedTournament && selectedTournament.matches && selectedTournament.matches.length > 0 && selectedTournament.type !== 'double-elimination' && (
               <div className="bg-gray-800 rounded-lg p-6">
                 <h3 className="text-2xl font-bold mb-4">{selectedTournament.name} - Alle Matches</h3>
                 <div className="grid md:grid-cols-2 gap-4">
