@@ -33,8 +33,8 @@ export default function AdminPage() {
   const [formData, setFormData] = useState({
     name: '',
     type: 'double-elimination',
-    format: 'BO3',
-    sets: 2,
+    format: 'BO5',
+    sets: 1,
     legs: 3,
     startScore: 501,
     playersCount: 8,
