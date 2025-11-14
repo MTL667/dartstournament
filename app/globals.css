@@ -27,51 +27,125 @@ body {
 }
 
 /* Glassmorphism Button Styles */
-@layer components {
-  .btn-glass {
-    @apply relative backdrop-blur-xl bg-white/10 border border-white/20 shadow-lg;
-    @apply hover:bg-white/20 hover:border-white/30 transition-all duration-300;
-    @apply hover:shadow-2xl hover:scale-[1.02];
-  }
-  
-  .btn-glass-primary {
-    @apply btn-glass bg-green-500/20 border-green-400/30 text-white;
-    @apply hover:bg-green-500/30 hover:border-green-400/50;
-    @apply shadow-[0_0_20px_rgba(34,197,94,0.3)];
-    @apply hover:shadow-[0_0_30px_rgba(34,197,94,0.5)];
-  }
-  
-  .btn-glass-danger {
-    @apply btn-glass bg-red-500/20 border-red-400/30 text-white;
-    @apply hover:bg-red-500/30 hover:border-red-400/50;
-    @apply shadow-[0_0_20px_rgba(239,68,68,0.3)];
-    @apply hover:shadow-[0_0_30px_rgba(239,68,68,0.5)];
-  }
-  
-  .btn-glass-info {
-    @apply btn-glass bg-blue-500/20 border-blue-400/30 text-white;
-    @apply hover:bg-blue-500/30 hover:border-blue-400/50;
-    @apply shadow-[0_0_20px_rgba(59,130,246,0.3)];
-    @apply hover:shadow-[0_0_30px_rgba(59,130,246,0.5)];
-  }
-  
-  .btn-glass-warning {
-    @apply btn-glass bg-orange-500/20 border-orange-400/30 text-white;
-    @apply hover:bg-orange-500/30 hover:border-orange-400/50;
-    @apply shadow-[0_0_20px_rgba(249,115,22,0.3)];
-    @apply hover:shadow-[0_0_30px_rgba(249,115,22,0.5)];
-  }
-  
-  .btn-glass-neutral {
-    @apply btn-glass bg-gray-500/20 border-gray-400/30 text-white;
-    @apply hover:bg-gray-500/30 hover:border-gray-400/50;
-    @apply shadow-[0_0_20px_rgba(107,114,128,0.3)];
-    @apply hover:shadow-[0_0_30px_rgba(107,114,128,0.5)];
-  }
-  
-  .card-glass {
-    @apply backdrop-blur-xl bg-white/5 border border-white/10 shadow-2xl;
-    @apply hover:bg-white/10 hover:border-white/20 transition-all duration-300;
-  }
+.btn-glass {
+  position: relative;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.btn-glass:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  transform: scale(1.02);
+}
+
+.btn-glass-primary {
+  position: relative;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background-color: rgba(34, 197, 94, 0.2);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.btn-glass-primary:hover {
+  background-color: rgba(34, 197, 94, 0.3);
+  border-color: rgba(74, 222, 128, 0.5);
+  box-shadow: 0 0 30px rgba(34, 197, 94, 0.5);
+  transform: scale(1.02);
+}
+
+.btn-glass-danger {
+  position: relative;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background-color: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.btn-glass-danger:hover {
+  background-color: rgba(239, 68, 68, 0.3);
+  border-color: rgba(248, 113, 113, 0.5);
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+  transform: scale(1.02);
+}
+
+.btn-glass-info {
+  position: relative;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background-color: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.btn-glass-info:hover {
+  background-color: rgba(59, 130, 246, 0.3);
+  border-color: rgba(96, 165, 250, 0.5);
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+  transform: scale(1.02);
+}
+
+.btn-glass-warning {
+  position: relative;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background-color: rgba(249, 115, 22, 0.2);
+  border: 1px solid rgba(251, 146, 60, 0.3);
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.3);
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.btn-glass-warning:hover {
+  background-color: rgba(249, 115, 22, 0.3);
+  border-color: rgba(251, 146, 60, 0.5);
+  box-shadow: 0 0 30px rgba(249, 115, 22, 0.5);
+  transform: scale(1.02);
+}
+
+.btn-glass-neutral {
+  position: relative;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background-color: rgba(107, 114, 128, 0.2);
+  border: 1px solid rgba(156, 163, 175, 0.3);
+  box-shadow: 0 0 20px rgba(107, 114, 128, 0.3);
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.btn-glass-neutral:hover {
+  background-color: rgba(107, 114, 128, 0.3);
+  border-color: rgba(156, 163, 175, 0.5);
+  box-shadow: 0 0 30px rgba(107, 114, 128, 0.5);
+  transform: scale(1.02);
+}
+
+.card-glass {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+}
+
+.card-glass:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
