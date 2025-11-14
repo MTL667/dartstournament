@@ -50,7 +50,7 @@ export default function MatchPage() {
   const [matches, setMatches] = useState<Match[]>([]);
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [currentLeg, setCurrentLeg] = useState<Leg | null>(null);
-  const [dartScores, setDartScores] = useState<number[]>([]);
+  const [turnScore, setTurnScore] = useState<string>('');  // Changed to single turn score input
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -125,24 +125,18 @@ export default function MatchPage() {
       const activeLeg = activeSet?.legs?.find((l: Leg) => l.status === 'active');
       setCurrentLeg(activeLeg || null);
     }
-    setDartScores([]);
+    setTurnScore('');
   };
 
-  const handleDartScore = (score: number) => {
-    if (dartScores.length < 3) {
-      setDartScores([...dartScores, score]);
+  const submitTurn = async () => {
+    if (!selectedMatch || !currentLeg || !turnScore) return;
+
+    const score = parseInt(turnScore);
+    if (isNaN(score) || score < 0 || score > 180) {
+      alert('Voer een geldige score in (0-180)');
+      return;
     }
-  };
 
-  const clearDarts = () => {
-    setDartScores([]);
-  };
-
-  const submitThrow = async () => {
-    if (!selectedMatch || !currentLeg || dartScores.length === 0) return;
-
-    // Calculate total score from all darts
-    const totalScore = dartScores.reduce((sum, score) => sum + (score > 0 ? score : 0), 0);
     const playerId = currentLeg.currentPlayer;
 
     try {
@@ -151,10 +145,10 @@ export default function MatchPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           playerId,
-          score: totalScore,
-          dart1: dartScores[0] || 0,
-          dart2: dartScores[1] || 0,
-          dart3: dartScores[2] || 0,
+          score: score,
+          dart1: null,  // Not tracking individual darts
+          dart2: null,
+          dart3: null,
         }),
       });
 
@@ -330,109 +324,89 @@ export default function MatchPage() {
           </div>
         </div>
 
-        {/* Current Throw */}
+        {/* Current Turn Input */}
         <div className="bg-gray-800 rounded-2xl p-8 mb-6">
           <div className="text-center mb-6">
             <div className="text-3xl font-bold mb-2">🎯 {currentPlayer?.name}</div>
-            <div className="text-5xl font-bold text-white mb-2">
-              Huidige Score: {currentPlayerScore}
+            <div className="text-6xl font-bold text-white mb-4">
+              {currentPlayerScore}
             </div>
+            <div className="text-xl text-gray-400">
+              Te gooien
+            </div>
+          </div>
+
+          {/* Score Input */}
+          <div className="max-w-md mx-auto mb-6">
+            <label className="block text-xl font-semibold text-gray-300 mb-3 text-center">
+              Score deze beurt (0-180)
+            </label>
+            <input
+              type="number"
+              value={turnScore}
+              onChange={(e) => setTurnScore(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && turnScore) {
+                  submitTurn();
+                }
+              }}
+              placeholder="Bijv. 60"
+              className="w-full text-6xl font-bold text-center py-6 px-4 bg-gray-900 border-4 border-green-500 rounded-2xl text-white focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-500/50"
+              min="0"
+              max="180"
+              autoFocus
+            />
             
-            {/* Beurt Info */}
-            {dartScores.length > 0 && (
-              <>
-                <div className="text-6xl font-bold text-green-500 my-4">
-                  Deze beurt: {dartScores.reduce((sum, score) => sum + (score > 0 ? score : 0), 0)}
+            {turnScore && !isNaN(parseInt(turnScore)) && (
+              <div className="mt-4 text-center">
+                <div className="text-4xl font-bold text-orange-400">
+                  Resterend: {currentPlayerScore - parseInt(turnScore)}
                 </div>
-                <div className="text-3xl text-orange-400 font-bold">
-                  Resterend: {currentPlayerScore - dartScores.reduce((sum, score) => sum + (score > 0 ? score : 0), 0)}
-                </div>
-              </>
-            )}
-            {dartScores.length === 0 && (
-              <div className="text-2xl text-gray-400 my-4">
-                Voer 3 darts in voor deze beurt
               </div>
             )}
           </div>
 
-          {/* Dart Display */}
-          <div className="flex justify-center gap-4 mb-6">
-            {dartScores.map((score, index) => (
-              <div key={index} className="w-24 h-24 btn-glass-primary rounded-xl flex flex-col items-center justify-center">
-                <div className="text-sm text-gray-300">Dart {index + 1}</div>
-                <div className="text-3xl font-bold">{score > 0 ? score : 'Miss'}</div>
-              </div>
-            ))}
-            {Array.from({ length: 3 - dartScores.length }).map((_, index) => (
-              <div key={`empty-${index}`} className="w-24 h-24 btn-glass rounded-xl flex flex-col items-center justify-center">
-                <div className="text-sm text-gray-400">Dart {dartScores.length + index + 1}</div>
-                <div className="text-3xl text-gray-600">-</div>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex gap-4">
+          <div className="flex gap-4 mb-6">
             <button
-              onClick={clearDarts}
-              disabled={dartScores.length === 0}
-              className="flex-1 btn-glass-danger py-6 rounded-xl font-bold text-2xl disabled:opacity-30 disabled:cursor-not-allowed"
+              onClick={() => setTurnScore('')}
+              className="flex-1 btn-glass-danger py-6 rounded-xl font-bold text-2xl"
             >
               ❌ Wissen
             </button>
             <button
-              onClick={submitThrow}
-              disabled={dartScores.length === 0}
+              onClick={submitTurn}
+              disabled={!turnScore || parseInt(turnScore) < 0 || parseInt(turnScore) > 180}
               className="flex-1 btn-glass-primary py-6 rounded-xl font-bold text-2xl disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              ✅ Bevestig Beurt ({dartScores.length}/3)
+              ✅ Bevestig Beurt
             </button>
           </div>
-        </div>
 
-        {/* Score Buttons */}
-        <div className="grid grid-cols-7 gap-3">
-          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map((num) => (
+          {/* Quick Score Buttons */}
+          <div className="text-center text-lg text-gray-400 mb-3">Snelkeuze scores:</div>
+          <div className="grid grid-cols-6 gap-2">
+            {[26, 41, 45, 60, 81, 85, 100, 121, 140, 180].map((score) => (
+              <button
+                key={score}
+                onClick={() => quickScore(score)}
+                className="btn-glass-info py-4 rounded-xl font-bold text-xl hover:scale-105 transition-all"
+              >
+                {score}
+              </button>
+            ))}
             <button
-              key={num}
-              onClick={() => handleDartScore(num)}
-              disabled={dartScores.length >= 3}
-              className="aspect-square btn-glass-info rounded-xl text-3xl font-bold disabled:opacity-30 disabled:cursor-not-allowed transition-all hover:scale-105"
+              onClick={() => quickScore(0)}
+              className="btn-glass-neutral py-4 rounded-xl font-bold text-xl col-span-3"
             >
-              {num}
+              Miss (0)
             </button>
-          ))}
-          <button
-            onClick={() => handleDartScore(25)}
-            disabled={dartScores.length >= 3}
-            className="aspect-square btn-glass-danger rounded-xl text-2xl font-bold disabled:opacity-30 disabled:cursor-not-allowed col-span-2"
-          >
-            Bull 25
-          </button>
-          <button
-            onClick={() => handleDartScore(50)}
-            disabled={dartScores.length >= 3}
-            className="aspect-square btn-glass-danger rounded-xl text-2xl font-bold disabled:opacity-30 disabled:cursor-not-allowed col-span-2"
-          >
-            Bull 50
-          </button>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3 mt-3">
-          <button
-            onClick={() => handleDartScore(0)}
-            disabled={dartScores.length >= 3}
-            className="btn-glass-neutral py-6 rounded-xl text-2xl font-bold disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            Miss (0)
-          </button>
-          <button
-            onClick={() => handleDartScore(0)}
-            disabled={dartScores.length >= 3}
-            className="btn-glass-warning py-6 rounded-xl text-2xl font-bold disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            Bust (0)
-          </button>
+            <button
+              onClick={() => quickScore(0)}
+              className="btn-glass-warning py-4 rounded-xl font-bold text-xl col-span-3"
+            >
+              Bust (0)
+            </button>
+          </div>
         </div>
       </div>
     </div>
