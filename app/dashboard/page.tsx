@@ -75,9 +75,11 @@ export default function DashboardPage() {
       // Get active matches from all tournaments
       const matches: Match[] = [];
       active.forEach((tournament: Tournament) => {
-        tournament.matches
-          .filter((m: Match) => m.status === 'active')
-          .forEach((m: Match) => matches.push(m));
+        if (tournament.matches && Array.isArray(tournament.matches)) {
+          tournament.matches
+            .filter((m: Match) => m.status === 'active')
+            .forEach((m: Match) => matches.push(m));
+        }
       });
       setActiveMatches(matches);
 
@@ -91,8 +93,9 @@ export default function DashboardPage() {
   };
 
   const getCurrentLeg = (match: Match): Leg | null => {
+    if (!match.sets || !Array.isArray(match.sets)) return null;
     const activeSet = match.sets.find(s => s.status === 'active');
-    if (!activeSet) return null;
+    if (!activeSet || !activeSet.legs || !Array.isArray(activeSet.legs)) return null;
     const activeLeg = activeSet.legs.find(l => l.status === 'active');
     return activeLeg || null;
   };
@@ -246,7 +249,7 @@ export default function DashboardPage() {
             )}
 
             {/* Tournament Bracket */}
-            {selectedTournament && selectedTournament.type === 'double-elimination' && (
+            {selectedTournament && selectedTournament.type === 'double-elimination' && selectedTournament.matches && selectedTournament.matches.length > 0 && (
               <div className="bg-gray-800 rounded-lg p-6">
                 <h3 className="text-2xl font-bold mb-6">{selectedTournament.name} - Tournament Bracket</h3>
                 <BracketView 
