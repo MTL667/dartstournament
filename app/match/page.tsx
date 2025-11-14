@@ -156,20 +156,24 @@ export default function MatchPage() {
 
       if (result.bust) {
         alert('BUST! Score blijft hetzelfde.');
-      } else if (result.legWon) {
-        alert('🎯 LEG GEWONNEN!');
-      } else if (result.setWon) {
-        alert('🏆 SET GEWONNEN!');
       } else if (result.matchWon) {
-        alert('🥇 MATCH GEWONNEN!');
+        alert('🏆 MATCH GEWONNEN! 🏆');
+        setSelectedMatch(null);
+      } else if (result.legWon) {
+        alert('✅ LEG GEWONNEN!');
       }
 
-      setDartScores([]);
+      // Clear input and refresh
+      setTurnScore('');
       await fetchMatches();
     } catch (error) {
-      console.error('Failed to submit throw:', error);
-      alert('Er is iets misgegaan bij het invoeren van de score');
+      console.error('Error submitting turn:', error);
+      alert('Fout bij opslaan van beurt');
     }
+  };
+
+  const quickScore = (score: number) => {
+    setTurnScore(score.toString());
   };
 
   // Passcode screen
