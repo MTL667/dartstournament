@@ -1,0 +1,138 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Tournament {
+  id             String   @id @default(cuid())
+  name           String
+  type           String   @default("double-elimination") // "single-elimination", "double-elimination", "round-robin"
+  format         String   // "BO3", "BO5", "BO7", etc.
+  sets           Int      // Number of sets to win (e.g., 2 for BO3)
+  legs           Int      // Number of legs to win a set (e.g., 3 for best of 5 legs)
+  startScore     Int      @default(501) // 301, 501, 701, etc.
+  status         String   @default("setup") // setup, active, completed
+  playersCount   Int      @default(8) // Number of players in tournament
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  players     Player[]
+  matches     Match[]
+}
+
+model Player {
+  id           String   @id @default(cuid())
+  name         String
+  seed         Int?     // Seeding position (1-8 for 8 players)
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  
+  matchesAsPlayer1 Match[] @relation("Player1")
+  matchesAsPlayer2 Match[] @relation("Player2")
+}
+
+model Match {
+  id           String   @id @default(cuid())
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  
+  // Bracket information
+  bracket      String   // "winners" or "losers"
+  round        Int      // Round number (1, 2, 3, etc.)
+  position     Int      // Position in round (1, 2, 3, 4 for round 1)
+  
+  // Players (can be null if waiting for previous match results)
+  player1Id    String?
+  player1      Player?  @relation("Player1", fields: [player1Id], references: [id])
+  
+  player2Id    String?
+  player2      Player?  @relation("Player2", fields: [player2Id], references: [id])
+  
+  // Match state
+  player1Sets  Int      @default(0)
+  player2Sets  Int      @default(0)
+  
+  currentSet   Int      @default(1)
+  currentLeg   Int      @default(1)
+  
+  startingPlayer String? // player1Id or player2Id
+  currentPlayer  String? // player1Id or player2Id
+  
+  status       String   @default("pending") // pending, active, completed
+  winnerId     String?
+  loserId      String?
+  
+  // Bracket progression
+  winnerNextMatchId  String? // Where winner goes
+  loserNextMatchId   String? // Where loser goes (for winners bracket)
+  winnerSlot         String? // "player1" or "player2" in next match
+  loserSlot          String? // "player1" or "player2" in loser's next match
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  sets         Set[]
+}
+
+model Set {
+  id          String   @id @default(cuid())
+  matchId     String
+  match       Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  
+  setNumber   Int
+  player1Legs Int      @default(0)
+  player2Legs Int      @default(0)
+  
+  status      String   @default("pending") // pending, active, completed
+  winnerId    String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  legs        Leg[]
+}
+
+model Leg {
+  id            String   @id @default(cuid())
+  setId         String
+  set           Set      @relation(fields: [setId], references: [id], onDelete: Cascade)
+  
+  legNumber     Int
+  player1Score  Int
+  player2Score  Int
+  
+  startingPlayer String // player1Id or player2Id
+  currentPlayer  String // player1Id or player2Id
+  
+  status        String   @default("active") // active, completed
+  winnerId      String?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  throws        Throw[]
+}
+
+model Throw {
+  id         String   @id @default(cuid())
+  legId      String
+  leg        Leg      @relation(fields: [legId], references: [id], onDelete: Cascade)
+  
+  playerId   String
+  score      Int
+  remaining  Int
+  
+  dart1      Int?
+  dart2      Int?
+  dart3      Int?
+  
+  createdAt  DateTime @default(now())
+}

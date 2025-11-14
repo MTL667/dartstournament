@@ -1,0 +1,31 @@
+# Easypanel Configuration
+# This file helps Easypanel understand your app
+
+name: darts-tournament
+type: app
+
+build:
+  type: dockerfile
+  dockerfile: Dockerfile
+
+deploy:
+  port: 3000
+  env:
+    - name: DATABASE_URL
+      value: "file:/app/prisma/dev.db"
+    - name: MATCH_PASSCODE
+      value: "1234"
+    - name: NODE_ENV
+      value: "production"
+
+# Volume for persistent SQLite database
+volumes:
+  - name: db
+    path: /app/prisma
+
+# Health check
+health:
+  path: /
+  interval: 30
+  timeout: 10
+

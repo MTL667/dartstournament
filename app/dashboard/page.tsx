@@ -1,0 +1,298 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { BracketView } from '@/components/BracketView';
+
+interface Tournament {
+  id: string;
+  name: string;
+  type: string;
+  format: string;
+  sets: number;
+  startScore: number;
+  status: string;
+  matches: Match[];
+}
+
+interface Match {
+  id: string;
+  bracket: string;
+  round: number;
+  position: number;
+  player1: Player | null;
+  player2: Player | null;
+  player1Sets: number;
+  player2Sets: number;
+  status: string;
+  winnerId?: string | null;
+  sets: Set[];
+}
+
+interface Player {
+  id: string;
+  name: string;
+}
+
+interface Set {
+  id: string;
+  setNumber: number;
+  player1Legs: number;
+  player2Legs: number;
+  status: string;
+  legs: Leg[];
+}
+
+interface Leg {
+  id: string;
+  legNumber: number;
+  player1Score: number;
+  player2Score: number;
+  status: string;
+  currentPlayer: string;
+}
+
+export default function DashboardPage() {
+  const [tournaments, setTournaments] = useState<Tournament[]>([]);
+  const [selectedTournament, setSelectedTournament] = useState<Tournament | null>(null);
+  const [activeMatches, setActiveMatches] = useState<Match[]>([]);
+
+  useEffect(() => {
+    fetchTournaments();
+    const interval = setInterval(fetchTournaments, 2000); // Refresh every 2 seconds
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchTournaments = async () => {
+    try {
+      const res = await fetch('/api/tournaments');
+      const data = await res.json();
+      
+      // Filter active tournaments
+      const active = data.filter((t: Tournament) => t.status === 'active');
+      setTournaments(active);
+
+      // Get active matches from all tournaments
+      const matches: Match[] = [];
+      active.forEach((tournament: Tournament) => {
+        tournament.matches
+          .filter((m: Match) => m.status === 'active')
+          .forEach((m: Match) => matches.push(m));
+      });
+      setActiveMatches(matches);
+
+      // Auto-select first active tournament
+      if (active.length > 0 && !selectedTournament) {
+        setSelectedTournament(active[0]);
+      }
+    } catch (error) {
+      console.error('Failed to fetch tournaments:', error);
+    }
+  };
+
+  const getCurrentLeg = (match: Match): Leg | null => {
+    const activeSet = match.sets.find(s => s.status === 'active');
+    if (!activeSet) return null;
+    const activeLeg = activeSet.legs.find(l => l.status === 'active');
+    return activeLeg || null;
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+      {/* Header */}
+      <div className="bg-green-600 shadow-lg">
+        <div className="max-w-7xl mx-auto px-8 py-6 flex justify-between items-center">
+          <h1 className="text-4xl font-bold">🎯 Live Darts Dashboard</h1>
+          <Link 
+            href="/"
+            className="bg-white text-green-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+          >
+            ← Home
+          </Link>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-8 py-8">
+        {tournaments.length === 0 ? (
+          <div className="text-center py-20">
+            <div className="text-6xl mb-4">🎯</div>
+            <h2 className="text-3xl font-bold mb-4">Geen Actieve Toernooien</h2>
+            <p className="text-gray-400 mb-8">Start een toernooi in het admin panel</p>
+            <Link 
+              href="/admin"
+              className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold inline-block transition-colors"
+            >
+              Ga naar Admin
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {/* Tournament Selector */}
+            {tournaments.length > 1 && (
+              <div className="flex gap-4 flex-wrap">
+                {tournaments.map((tournament) => (
+                  <button
+                    key={tournament.id}
+                    onClick={() => setSelectedTournament(tournament)}
+                    className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
+                      selectedTournament?.id === tournament.id
+                        ? 'bg-green-600 text-white'
+                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                    }`}
+                  >
+                    {tournament.name}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Active Matches */}
+            {activeMatches.length === 0 ? (
+              <div className="bg-gray-800 rounded-lg p-12 text-center">
+                <div className="text-5xl mb-4">⏸️</div>
+                <h3 className="text-2xl font-bold mb-2">Geen Actieve Matches</h3>
+                <p className="text-gray-400">Matches verschijnen hier zodra ze starten</p>
+              </div>
+            ) : (
+              <div className="grid gap-8">
+                {activeMatches.map((match) => {
+                  const currentLeg = getCurrentLeg(match);
+                  const activeSet = match.sets.find(s => s.status === 'active');
+
+                  return (
+                    <div key={match.id} className="bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+                      {/* Match Header */}
+                      <div className="bg-gradient-to-r from-green-600 to-green-700 px-8 py-4">
+                        <div className="flex justify-between items-center">
+                          <h3 className="text-2xl font-bold">LIVE MATCH</h3>
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                            <span className="font-semibold">IN PROGRESS</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Scoreboard */}
+                      <div className="p-8">
+                        <div className="grid grid-cols-3 gap-8 items-center">
+                          {/* Player 1 */}
+                          <div className={`text-center p-6 rounded-xl transition-all ${
+                            currentLeg?.currentPlayer === match.player1?.id 
+                              ? 'bg-green-600 scale-105 shadow-xl' 
+                              : 'bg-gray-700'
+                          }`}>
+                            <div className="text-3xl font-bold mb-2">{match.player1?.name || 'TBD'}</div>
+                            <div className="text-7xl font-bold mb-4">{currentLeg?.player1Score || 0}</div>
+                            <div className="text-xl">Sets: {match.player1Sets}</div>
+                            {activeSet && (
+                              <div className="text-lg text-gray-300">Legs: {activeSet.player1Legs}</div>
+                            )}
+                          </div>
+
+                          {/* VS */}
+                          <div className="text-center">
+                            <div className="text-6xl font-bold text-gray-600">VS</div>
+                            {activeSet && (
+                              <div className="mt-4 text-2xl text-gray-400">
+                                Set {activeSet.setNumber}
+                              </div>
+                            )}
+                            {currentLeg && (
+                              <div className="text-xl text-gray-500">
+                                Leg {currentLeg.legNumber}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Player 2 */}
+                          <div className={`text-center p-6 rounded-xl transition-all ${
+                            currentLeg?.currentPlayer === match.player2?.id 
+                              ? 'bg-green-600 scale-105 shadow-xl' 
+                              : 'bg-gray-700'
+                          }`}>
+                            <div className="text-3xl font-bold mb-2">{match.player2?.name || 'TBD'}</div>
+                            <div className="text-7xl font-bold mb-4">{currentLeg?.player2Score || 0}</div>
+                            <div className="text-xl">Sets: {match.player2Sets}</div>
+                            {activeSet && (
+                              <div className="text-lg text-gray-300">Legs: {activeSet.player2Legs}</div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Set History */}
+                        {match.sets.length > 0 && (
+                          <div className="mt-8 pt-8 border-t border-gray-700">
+                            <h4 className="text-xl font-bold mb-4 text-gray-400">Set Geschiedenis</h4>
+                            <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+                              {match.sets.map((set) => (
+                                <div key={set.id} className={`p-4 rounded-lg text-center ${
+                                  set.status === 'active' ? 'bg-green-600' : 'bg-gray-700'
+                                }`}>
+                                  <div className="text-sm text-gray-300">Set {set.setNumber}</div>
+                                  <div className="text-2xl font-bold">
+                                    {set.player1Legs} - {set.player2Legs}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Tournament Bracket */}
+            {selectedTournament && selectedTournament.type === 'double-elimination' && (
+              <div className="bg-gray-800 rounded-lg p-6">
+                <h3 className="text-2xl font-bold mb-6">{selectedTournament.name} - Tournament Bracket</h3>
+                <BracketView 
+                  matches={selectedTournament.matches} 
+                  sets={selectedTournament.sets}
+                />
+              </div>
+            )}
+
+            {/* All Matches (for non-bracket tournaments or summary) */}
+            {selectedTournament && selectedTournament.matches.length > 0 && selectedTournament.type !== 'double-elimination' && (
+              <div className="bg-gray-800 rounded-lg p-6">
+                <h3 className="text-2xl font-bold mb-4">{selectedTournament.name} - Alle Matches</h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {selectedTournament.matches.map((match) => (
+                    <div key={match.id} className={`p-4 rounded-lg ${
+                      match.status === 'active' ? 'bg-green-900' :
+                      match.status === 'completed' ? 'bg-gray-700' :
+                      'bg-gray-750'
+                    }`}>
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <div className="font-semibold">{match.player1?.name || 'TBD'}</div>
+                          <div className="text-sm text-gray-400">vs</div>
+                          <div className="font-semibold">{match.player2?.name || 'TBD'}</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-3xl font-bold">
+                            {match.player1Sets} - {match.player2Sets}
+                          </div>
+                          <div className="text-xs text-gray-400 mt-1">
+                            {match.status === 'active' ? '🟢 Live' :
+                             match.status === 'completed' ? '✅ Voltooid' :
+                             '⏸️ Wachtend'}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
