@@ -211,44 +211,31 @@ export default function AdminPage() {
                 </select>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Format
+                    Format (Best of X Legs)
                   </label>
                   <select
                     value={formData.format}
                     onChange={(e) => {
                       const format = e.target.value;
-                      const sets = parseInt(format.replace('BO', ''));
-                      const setsToWin = Math.ceil(sets / 2);
-                      setFormData({ ...formData, format, sets: setsToWin });
+                      const totalLegs = parseInt(format.replace('BO', ''));
+                      const legsToWin = Math.ceil(totalLegs / 2);
+                      setFormData({ ...formData, format, legs: legsToWin, sets: 1 });
                     }}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
                   >
-                    <option value="BO3">Best of 3</option>
-                    <option value="BO5">Best of 5</option>
-                    <option value="BO7">Best of 7</option>
+                    <option value="BO3">Best of 3 Legs (First to 2)</option>
+                    <option value="BO5">Best of 5 Legs (First to 3)</option>
+                    <option value="BO7">Best of 7 Legs (First to 4)</option>
+                    <option value="BO9">Best of 9 Legs (First to 5)</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Sets om te winnen
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.sets}
-                    onChange={(e) => setFormData({ ...formData, sets: parseInt(e.target.value) })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                    min="1"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Legs per set
+                    Legs om te winnen (First to)
                   </label>
                   <input
                     type="number"
