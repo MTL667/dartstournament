@@ -163,7 +163,7 @@ export default function DashboardPage() {
               <div className="grid gap-8">
                 {activeMatches.map((match) => {
                   const currentLeg = getCurrentLeg(match);
-                  const activeSet = match.sets.find(s => s.status === 'active');
+                  const activeSet = match.sets && Array.isArray(match.sets) ? match.sets.find(s => s.status === 'active') : null;
 
                   return (
                     <div key={match.id} className="bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
