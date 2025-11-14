@@ -33,13 +33,13 @@ export async function POST(
       return NextResponse.json({ error: 'Match not found' }, { status: 404 });
     }
 
-    // Get or create current set
+    // Get or create current set (we still need this for DB structure, but treat it as a single set)
     let currentSet = match.sets[0];
     if (!currentSet) {
       currentSet = await prisma.set.create({
         data: {
           matchId,
-          setNumber: match.currentSet,
+          setNumber: 1,
           status: 'active',
         },
         include: {
@@ -58,7 +58,7 @@ export async function POST(
       const newLeg = await prisma.leg.create({
         data: {
           setId: currentSet.id,
-          legNumber: match.currentLeg,
+          legNumber: currentSet.legs.length + 1,
           player1Score: match.tournament.startScore,
           player2Score: match.tournament.startScore,
           startingPlayer: match.startingPlayer || match.player1Id || '',
@@ -127,7 +127,7 @@ export async function POST(
         },
       });
 
-      // Update set scores
+      // Update leg count in set (we use this to track total legs won)
       const updatedSet = await prisma.set.update({
         where: { id: currentSet.id },
         data: {
@@ -137,13 +137,13 @@ export async function POST(
         },
       });
 
-      const player1Legs = isPlayer1 ? updatedSet.player1Legs : updatedSet.player1Legs;
-      const player2Legs = isPlayer1 ? updatedSet.player2Legs : updatedSet.player2Legs;
+      const player1Legs = updatedSet.player1Legs;
+      const player2Legs = updatedSet.player2Legs;
       const legsToWin = match.tournament.legs;
 
-      // Check for set win
-      if ((isPlayer1 && updatedSet.player1Legs >= legsToWin) || 
-          (!isPlayer1 && updatedSet.player2Legs >= legsToWin)) {
+      // Check for match win (Best of X legs)
+      if ((isPlayer1 && player1Legs >= legsToWin) || 
+          (!isPlayer1 && player2Legs >= legsToWin)) {
         
         await prisma.set.update({
           where: { id: currentSet.id },
@@ -153,56 +153,28 @@ export async function POST(
           },
         });
 
-        // Update match sets
-        const updatedMatch = await prisma.match.update({
+        await prisma.match.update({
           where: { id: matchId },
           data: {
-            [isPlayer1 ? 'player1Sets' : 'player2Sets']: {
-              increment: 1,
-            },
-            currentSet: { increment: 1 },
-            currentLeg: 1,
+            status: 'completed',
+            winnerId: playerId,
+            loserId: isPlayer1 ? match.player2Id : match.player1Id,
           },
         });
 
-        const setsToWin = match.tournament.sets;
-        
-        // Check for match win
-        if ((isPlayer1 && updatedMatch.player1Sets >= setsToWin) || 
-            (!isPlayer1 && updatedMatch.player2Sets >= setsToWin)) {
-          
-          await prisma.match.update({
-            where: { id: matchId },
-            data: {
-              status: 'completed',
-              winnerId: playerId,
-            },
+        // Progress bracket automatically
+        try {
+          await fetch(`${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/api/matches/${matchId}/complete`, {
+            method: 'POST',
           });
-
-          // Progress bracket automatically
-          try {
-            await fetch(`${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/api/matches/${matchId}/complete`, {
-              method: 'POST',
-            });
-          } catch (error) {
-            console.error('Failed to progress bracket:', error);
-          }
-
-          return NextResponse.json({ matchWon: true, setWon: true, legWon: true });
+        } catch (error) {
+          console.error('Failed to progress bracket:', error);
         }
 
-        return NextResponse.json({ setWon: true, legWon: true });
+        return NextResponse.json({ matchWon: true, legWon: true, player1Legs, player2Legs });
       }
 
-      // Start new leg
-      await prisma.match.update({
-        where: { id: matchId },
-        data: {
-          currentLeg: { increment: 1 },
-        },
-      });
-
-      return NextResponse.json({ legWon: true });
+      return NextResponse.json({ legWon: true, player1Legs, player2Legs });
     }
 
     // Update score and switch player

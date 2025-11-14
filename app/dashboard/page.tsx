@@ -187,22 +187,16 @@ export default function DashboardPage() {
                           }`}>
                             <div className="text-3xl font-bold mb-2">{match.player1?.name || 'TBD'}</div>
                             <div className="text-7xl font-bold mb-4">{currentLeg?.player1Score || 0}</div>
-                            <div className="text-xl">Sets: {match.player1Sets}</div>
                             {activeSet && (
-                              <div className="text-lg text-gray-300">Legs: {activeSet.player1Legs}</div>
+                              <div className="text-2xl">Legs: {activeSet.player1Legs}</div>
                             )}
                           </div>
 
                           {/* VS */}
                           <div className="text-center">
                             <div className="text-6xl font-bold text-gray-600">VS</div>
-                            {activeSet && (
-                              <div className="mt-4 text-2xl text-gray-400">
-                                Set {activeSet.setNumber}
-                              </div>
-                            )}
                             {currentLeg && (
-                              <div className="text-xl text-gray-500">
+                              <div className="mt-4 text-2xl text-gray-400">
                                 Leg {currentLeg.legNumber}
                               </div>
                             )}
@@ -216,31 +210,18 @@ export default function DashboardPage() {
                           }`}>
                             <div className="text-3xl font-bold mb-2">{match.player2?.name || 'TBD'}</div>
                             <div className="text-7xl font-bold mb-4">{currentLeg?.player2Score || 0}</div>
-                            <div className="text-xl">Sets: {match.player2Sets}</div>
                             {activeSet && (
-                              <div className="text-lg text-gray-300">Legs: {activeSet.player2Legs}</div>
+                              <div className="text-2xl">Legs: {activeSet.player2Legs}</div>
                             )}
                           </div>
                         </div>
 
-                        {/* Set History */}
-                        {match.sets && match.sets.length > 0 && (
-                          <div className="mt-8 pt-8 border-t border-gray-700">
-                            <h4 className="text-xl font-bold mb-4 text-gray-400">Set Geschiedenis</h4>
-                            <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
-                              {match.sets.map((set) => (
-                                <div key={set.id} className={`p-4 rounded-lg text-center ${
-                                  set.status === 'active' ? 'bg-green-600' : 'bg-gray-700'
-                                }`}>
-                                  <div className="text-sm text-gray-300">Set {set.setNumber}</div>
-                                  <div className="text-2xl font-bold">
-                                    {set.player1Legs} - {set.player2Legs}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
+                        {/* Match Format Info */}
+                        <div className="mt-8 pt-8 border-t border-gray-700 text-center">
+                          <div className="text-xl text-gray-400">
+                            {match.tournament.format} • First to {match.tournament.legs} legs
                           </div>
-                        )}
+                        </div>
                       </div>
                     </div>
                   );

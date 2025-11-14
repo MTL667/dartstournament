@@ -311,23 +311,21 @@ export default function MatchPage() {
               isPlayer1Turn ? 'bg-green-600' : 'bg-gray-700'
             }`}>
               <div className="text-3xl font-bold mb-2">{selectedMatch?.player1?.name || 'TBD'}</div>
-              <div className="text-7xl font-bold">{currentLeg?.player1Score || 0}</div>
-              <div className="text-xl mt-2">Sets: {selectedMatch?.player1Sets || 0}</div>
-              {activeSet && <div className="text-lg">Legs: {activeSet.player1Legs}</div>}
+              <div className="text-7xl font-bold mb-4">{currentLeg?.player1Score || 0}</div>
+              <div className="text-2xl">Legs: {activeSet?.player1Legs || 0}</div>
             </div>
 
             <div className={`text-center p-6 rounded-xl ${
               !isPlayer1Turn ? 'bg-green-600' : 'bg-gray-700'
             }`}>
               <div className="text-3xl font-bold mb-2">{selectedMatch?.player2?.name || 'TBD'}</div>
-              <div className="text-7xl font-bold">{currentLeg?.player2Score || 0}</div>
-              <div className="text-xl mt-2">Sets: {selectedMatch?.player2Sets || 0}</div>
-              {activeSet && <div className="text-lg">Legs: {activeSet.player2Legs}</div>}
+              <div className="text-7xl font-bold mb-4">{currentLeg?.player2Score || 0}</div>
+              <div className="text-2xl">Legs: {activeSet?.player2Legs || 0}</div>
             </div>
           </div>
 
           <div className="text-center mt-6 text-xl text-gray-400">
-            {activeSet && `Set ${activeSet.setNumber}`} | {currentLeg && `Leg ${currentLeg.legNumber}`}
+            {currentLeg && `Leg ${currentLeg.legNumber}`}
           </div>
         </div>
 
