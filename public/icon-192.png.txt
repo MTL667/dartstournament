@@ -1,0 +1,2 @@
+# Placeholder for icon - in production, replace with actual PNG
+# For now, this is just a placeholder file
