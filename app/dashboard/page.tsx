@@ -103,7 +103,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+    <div className="min-h-screen h-full bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white overflow-y-auto">
       {/* Header */}
       <div className="bg-green-600 shadow-lg">
         <div className="max-w-7xl mx-auto px-8 py-6 flex justify-between items-center">
