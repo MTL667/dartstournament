@@ -27,6 +27,7 @@ interface Match {
   status: string;
   winnerId?: string | null;
   sets: Set[];
+  tournament?: Tournament;
 }
 
 interface Player {
