@@ -17,6 +17,7 @@ interface Match {
   player1Sets: number;
   player2Sets: number;
   currentPlayer: string;
+  startingPlayer: string;
   status: string;
   sets: Set[];
 }
