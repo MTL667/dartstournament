@@ -283,69 +283,85 @@ export default function MatchPage() {
   const activeSet = selectedMatch?.sets?.find(s => s.status === 'active');
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+    <div className="min-h-screen bg-gray-900 text-white p-2 md:p-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header - Compact */}
+        <div className="flex justify-between items-center mb-4 bg-gray-800 rounded-xl p-3">
           <button
             onClick={() => setSelectedMatch(null)}
-            className="btn-glass-neutral px-6 py-3 rounded-xl font-semibold"
+            className="btn-glass-neutral px-4 py-2 rounded-xl font-semibold text-sm"
           >
             ← Matches
           </button>
-          <h1 className="text-2xl font-bold">{selectedMatch?.tournament?.name || 'Match'}</h1>
+          <h1 className="text-lg md:text-xl font-bold truncate px-2">{selectedMatch?.tournament?.name || 'Match'}</h1>
           <button
             onClick={() => setIsUnlocked(false)}
-            className="btn-glass-danger px-6 py-3 rounded-xl font-semibold"
+            className="btn-glass-danger px-4 py-2 rounded-xl font-semibold text-sm"
           >
             🔒
           </button>
         </div>
 
-        {/* Scoreboard */}
-        <div className="bg-gray-800 rounded-2xl p-6 mb-6">
-          <div className="grid grid-cols-2 gap-6">
-            <div className={`text-center p-6 rounded-xl ${
-              isPlayer1Turn ? 'bg-green-600' : 'bg-gray-700'
+        {/* Scoreboard - Prominent en iPad-vriendelijk */}
+        <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-4 mb-4 shadow-2xl border-2 border-gray-700">
+          <div className="grid grid-cols-2 gap-4">
+            {/* Player 1 */}
+            <div className={`text-center p-6 rounded-2xl transition-all duration-300 ${
+              isPlayer1Turn 
+                ? 'bg-gradient-to-br from-green-600 to-green-700 scale-105 shadow-2xl ring-4 ring-green-400' 
+                : 'bg-gray-700'
             }`}>
-              <div className="text-3xl font-bold mb-2">{selectedMatch?.player1?.name || 'TBD'}</div>
-              <div className="text-7xl font-bold mb-4">{currentLeg?.player1Score || 0}</div>
-              <div className="text-2xl">Legs: {activeSet?.player1Legs || 0}</div>
+              <div className="text-2xl md:text-4xl font-bold mb-3 truncate">{selectedMatch?.player1?.name || 'TBD'}</div>
+              <div className="text-8xl md:text-9xl font-black mb-4 text-white drop-shadow-lg">
+                {currentLeg?.player1Score || 0}
+              </div>
+              <div className="text-xl md:text-2xl opacity-90">
+                Legs gewonnen: <span className="font-bold">{activeSet?.player1Legs || 0}</span>
+              </div>
+              {isPlayer1Turn && (
+                <div className="mt-3 text-lg font-semibold text-green-200 animate-pulse">
+                  ▶ AAN DE BEURT
+                </div>
+              )}
             </div>
 
-            <div className={`text-center p-6 rounded-xl ${
-              !isPlayer1Turn ? 'bg-green-600' : 'bg-gray-700'
+            {/* Player 2 */}
+            <div className={`text-center p-6 rounded-2xl transition-all duration-300 ${
+              !isPlayer1Turn 
+                ? 'bg-gradient-to-br from-green-600 to-green-700 scale-105 shadow-2xl ring-4 ring-green-400' 
+                : 'bg-gray-700'
             }`}>
-              <div className="text-3xl font-bold mb-2">{selectedMatch?.player2?.name || 'TBD'}</div>
-              <div className="text-7xl font-bold mb-4">{currentLeg?.player2Score || 0}</div>
-              <div className="text-2xl">Legs: {activeSet?.player2Legs || 0}</div>
+              <div className="text-2xl md:text-4xl font-bold mb-3 truncate">{selectedMatch?.player2?.name || 'TBD'}</div>
+              <div className="text-8xl md:text-9xl font-black mb-4 text-white drop-shadow-lg">
+                {currentLeg?.player2Score || 0}
+              </div>
+              <div className="text-xl md:text-2xl opacity-90">
+                Legs gewonnen: <span className="font-bold">{activeSet?.player2Legs || 0}</span>
+              </div>
+              {!isPlayer1Turn && (
+                <div className="mt-3 text-lg font-semibold text-green-200 animate-pulse">
+                  ▶ AAN DE BEURT
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="text-center mt-6 text-xl text-gray-400">
-            {currentLeg && `Leg ${currentLeg.legNumber}`}
+          <div className="text-center mt-4 text-lg md:text-xl text-gray-300 bg-gray-800/50 rounded-xl py-2">
+            {currentLeg && `Leg ${currentLeg.legNumber}`} • {currentPlayer?.name || 'TBD'} gooit
           </div>
         </div>
 
-        {/* Current Turn Input */}
-        <div className="bg-gray-800 rounded-2xl p-8 mb-6">
-          <div className="text-center mb-6">
-            <div className="text-3xl font-bold mb-2">🎯 {currentPlayer?.name}</div>
-            <div className="text-6xl font-bold text-white mb-4">
-              {currentPlayerScore}
-            </div>
-            <div className="text-xl text-gray-400">
-              Te gooien
-            </div>
-          </div>
-
-          {/* Score Input */}
-          <div className="max-w-md mx-auto mb-6">
-            <label className="block text-xl font-semibold text-gray-300 mb-3 text-center">
-              Score deze beurt (0-180)
+        {/* Score Input - iPad Optimized */}
+        <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-4 md:p-6 shadow-2xl border-2 border-gray-700">
+          {/* Score Input Field */}
+          <div className="mb-6">
+            <label className="block text-2xl md:text-3xl font-bold text-center mb-4 text-green-400">
+              Voer score in voor {currentPlayer?.name}
             </label>
             <input
               type="number"
+              inputMode="numeric"
+              pattern="[0-9]*"
               value={turnScore}
               onChange={(e) => setTurnScore(e.target.value)}
               onKeyDown={(e) => {
@@ -353,62 +369,73 @@ export default function MatchPage() {
                   submitTurn();
                 }
               }}
-              placeholder="Bijv. 60"
-              className="w-full text-6xl font-bold text-center py-6 px-4 bg-gray-900 border-4 border-green-500 rounded-2xl text-white focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-500/50"
+              placeholder="0-180"
+              className="w-full text-7xl md:text-8xl font-black text-center py-8 px-4 bg-gray-900 border-4 border-green-500 rounded-3xl text-white focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-500/50 shadow-inner"
               min="0"
               max="180"
               autoFocus
             />
             
             {turnScore && !isNaN(parseInt(turnScore)) && currentPlayerScore !== undefined && (
-              <div className="mt-4 text-center">
-                <div className="text-4xl font-bold text-orange-400">
-                  Resterend: {currentPlayerScore - parseInt(turnScore)}
+              <div className="mt-6 p-4 bg-orange-500/20 border-2 border-orange-500 rounded-2xl">
+                <div className="text-center">
+                  <div className="text-xl text-orange-200 mb-1">NA DEZE BEURT:</div>
+                  <div className="text-6xl font-black text-orange-400">
+                    {Math.max(0, currentPlayerScore - parseInt(turnScore))}
+                  </div>
+                  <div className="text-lg text-orange-200 mt-1">punten resterend</div>
                 </div>
               </div>
             )}
           </div>
 
-          <div className="flex gap-4 mb-6">
+          {/* Action Buttons - Extra Groot */}
+          <div className="grid grid-cols-2 gap-4 mb-6">
             <button
               onClick={() => setTurnScore('')}
-              className="flex-1 btn-glass-danger py-6 rounded-xl font-bold text-2xl"
+              className="btn-glass-danger py-8 rounded-2xl font-bold text-3xl shadow-xl hover:scale-105 transition-all"
             >
-              ❌ Wissen
+              <div className="text-5xl mb-2">❌</div>
+              <div>Wissen</div>
             </button>
             <button
               onClick={submitTurn}
-              disabled={!turnScore || parseInt(turnScore) < 0 || parseInt(turnScore) > 180}
-              className="flex-1 btn-glass-primary py-6 rounded-xl font-bold text-2xl disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!turnScore || isNaN(parseInt(turnScore)) || parseInt(turnScore) < 0 || parseInt(turnScore) > 180}
+              className="btn-glass-primary py-8 rounded-2xl font-bold text-3xl shadow-xl hover:scale-105 transition-all disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
-              ✅ Bevestig Beurt
+              <div className="text-5xl mb-2">✅</div>
+              <div>Bevestig</div>
             </button>
           </div>
 
-          {/* Quick Score Buttons */}
-          <div className="text-center text-lg text-gray-400 mb-3">Snelkeuze scores:</div>
-          <div className="grid grid-cols-6 gap-2">
-            {[26, 41, 45, 60, 81, 85, 100, 121, 140, 180].map((score) => (
+          {/* Quick Score Buttons - Groot en Touch-vriendelijk */}
+          <div className="bg-gray-900/50 rounded-2xl p-4">
+            <div className="text-center text-xl font-semibold text-gray-300 mb-4">⚡ Snelkeuze</div>
+            <div className="grid grid-cols-5 gap-3">
+              {[26, 41, 45, 60, 81, 85, 100, 121, 140, 180].map((score) => (
+                <button
+                  key={score}
+                  onClick={() => quickScore(score)}
+                  className="btn-glass-info py-6 rounded-xl font-bold text-2xl hover:scale-110 transition-all active:scale-95"
+                >
+                  {score}
+                </button>
+              ))}
+            </div>
+            <div className="grid grid-cols-2 gap-3 mt-3">
               <button
-                key={score}
-                onClick={() => quickScore(score)}
-                className="btn-glass-info py-4 rounded-xl font-bold text-xl hover:scale-105 transition-all"
+                onClick={() => quickScore(0)}
+                className="btn-glass-neutral py-6 rounded-xl font-bold text-xl hover:scale-105 transition-all"
               >
-                {score}
+                ⭕ Miss (0)
               </button>
-            ))}
-            <button
-              onClick={() => quickScore(0)}
-              className="btn-glass-neutral py-4 rounded-xl font-bold text-xl col-span-3"
-            >
-              Miss (0)
-            </button>
-            <button
-              onClick={() => quickScore(0)}
-              className="btn-glass-warning py-4 rounded-xl font-bold text-xl col-span-3"
-            >
-              Bust (0)
-            </button>
+              <button
+                onClick={() => quickScore(0)}
+                className="btn-glass-warning py-6 rounded-xl font-bold text-xl hover:scale-105 transition-all"
+              >
+                💥 Bust (0)
+              </button>
+            </div>
           </div>
         </div>
       </div>
