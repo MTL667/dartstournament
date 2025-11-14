@@ -360,7 +360,7 @@ export default function MatchPage() {
               autoFocus
             />
             
-            {turnScore && !isNaN(parseInt(turnScore)) && (
+            {turnScore && !isNaN(parseInt(turnScore)) && currentPlayerScore !== undefined && (
               <div className="mt-4 text-center">
                 <div className="text-4xl font-bold text-orange-400">
                   Resterend: {currentPlayerScore - parseInt(turnScore)}
