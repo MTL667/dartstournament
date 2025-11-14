@@ -35,6 +35,15 @@ interface Set {
   legs: Leg[];
 }
 
+interface Throw {
+  id: string;
+  score: number;
+  playerId: string;
+  dart1: number | null;
+  dart2: number | null;
+  dart3: number | null;
+}
+
 interface Leg {
   id: string;
   legNumber: number;
@@ -42,6 +51,7 @@ interface Leg {
   player2Score: number;
   currentPlayer: string;
   status: string;
+  throws?: Throw[];
 }
 
 export default function MatchPage() {
