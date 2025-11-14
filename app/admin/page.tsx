@@ -156,7 +156,8 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="h-screen w-full bg-gray-50 p-8 overflow-y-auto">
+    <div className="h-screen w-full bg-gray-50 flex flex-col overflow-hidden">
+      <div className="flex-1 overflow-y-auto p-8">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900">⚙️ Toernooi Beheer</h1>
@@ -407,6 +408,7 @@ export default function AdminPage() {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 }

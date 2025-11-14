@@ -103,9 +103,9 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white overflow-y-auto">
+    <div className="h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="bg-green-600 shadow-lg">
+      <div className="bg-green-600 shadow-lg flex-shrink-0">
         <div className="max-w-7xl mx-auto px-8 py-6 flex justify-between items-center">
           <h1 className="text-4xl font-bold">🎯 Live Darts Dashboard</h1>
           <Link 
@@ -279,6 +279,7 @@ export default function DashboardPage() {
             )}
           </div>
         )}
+      </div>
       </div>
     </div>
   );

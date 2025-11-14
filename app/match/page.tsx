@@ -430,8 +430,9 @@ export default function MatchPage() {
   const activeSet = selectedMatch?.sets?.find(s => s.status === 'active');
 
   return (
-    <div className="h-screen w-full bg-gray-900 text-white p-2 md:p-4 overflow-y-auto">
-      <div className="max-w-7xl mx-auto">
+    <div className="h-screen w-full bg-gray-900 text-white flex flex-col overflow-hidden">
+      <div className="flex-1 overflow-y-auto p-2 md:p-4">
+        <div className="max-w-7xl mx-auto">
         {/* Header - Compact */}
         <div className="mb-4 space-y-2">
           <div className="flex justify-between items-center bg-gray-800 rounded-xl p-3">
@@ -627,6 +628,7 @@ export default function MatchPage() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
