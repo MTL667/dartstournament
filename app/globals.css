@@ -14,10 +14,20 @@
   }
 }
 
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+  position: fixed;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  touch-action: pan-x pan-y;
 }
 
 h1, h2, h3, h4, h5, h6 {
