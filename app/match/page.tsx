@@ -115,17 +115,55 @@ export default function MatchPage() {
   };
 
   const selectMatch = async (match: Match) => {
-    // Fetch full match details
-    const res = await fetch(`/api/matches/${match.id}`);
-    const fullMatch = await res.json();
-    setSelectedMatch(fullMatch);
-    
-    if (fullMatch.sets && Array.isArray(fullMatch.sets)) {
-      const activeSet = fullMatch.sets.find((s: Set) => s.status === 'active');
-      const activeLeg = activeSet?.legs?.find((l: Leg) => l.status === 'active');
-      setCurrentLeg(activeLeg || null);
+    try {
+      // Fetch full match details
+      const res = await fetch(`/api/matches/${match.id}`);
+      const fullMatch = await res.json();
+      
+      // Check if match has active set/leg, if not initialize with a throw of 0
+      if (!fullMatch.sets || fullMatch.sets.length === 0 || 
+          !fullMatch.sets.find((s: Set) => s.status === 'active')) {
+        // Initialize match by making a "dummy" throw that will create set and leg
+        console.log('Initializing match with first set and leg...');
+        const initRes = await fetch(`/api/matches/${match.id}/throw`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            playerId: fullMatch.player1Id,
+            score: 0,
+            dart1: null,
+            dart2: null,
+            dart3: null,
+          }),
+        });
+        
+        if (initRes.ok) {
+          // Re-fetch match with new set/leg
+          const updatedRes = await fetch(`/api/matches/${match.id}`);
+          const updatedMatch = await updatedRes.json();
+          setSelectedMatch(updatedMatch);
+          
+          if (updatedMatch.sets && Array.isArray(updatedMatch.sets)) {
+            const activeSet = updatedMatch.sets.find((s: Set) => s.status === 'active');
+            const activeLeg = activeSet?.legs?.find((l: Leg) => l.status === 'active');
+            setCurrentLeg(activeLeg || null);
+          }
+        }
+      } else {
+        setSelectedMatch(fullMatch);
+        
+        if (fullMatch.sets && Array.isArray(fullMatch.sets)) {
+          const activeSet = fullMatch.sets.find((s: Set) => s.status === 'active');
+          const activeLeg = activeSet?.legs?.find((l: Leg) => l.status === 'active');
+          setCurrentLeg(activeLeg || null);
+        }
+      }
+      
+      setTurnScore('');
+    } catch (error) {
+      console.error('Error selecting match:', error);
+      alert('Fout bij selecteren van match: ' + error);
     }
-    setTurnScore('');
   };
 
   const submitTurn = async () => {
