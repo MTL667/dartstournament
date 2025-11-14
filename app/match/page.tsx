@@ -163,12 +163,26 @@ export default function MatchPage() {
         alert('✅ LEG GEWONNEN!');
       }
 
-      // Clear input and refresh
+      // Clear input and refresh match data
       setTurnScore('');
+      
+      // Re-fetch the full match to update currentLeg
+      if (selectedMatch) {
+        const res = await fetch(`/api/matches/${selectedMatch.id}`);
+        const updatedMatch = await res.json();
+        setSelectedMatch(updatedMatch);
+        
+        if (updatedMatch.sets && Array.isArray(updatedMatch.sets)) {
+          const activeSet = updatedMatch.sets.find((s: any) => s.status === 'active');
+          const activeLeg = activeSet?.legs?.find((l: any) => l.status === 'active');
+          setCurrentLeg(activeLeg || null);
+        }
+      }
+      
       await fetchMatches();
     } catch (error) {
       console.error('Error submitting turn:', error);
-      alert('Fout bij opslaan van beurt');
+      alert('Fout bij opslaan van beurt: ' + error);
     }
   };
 
