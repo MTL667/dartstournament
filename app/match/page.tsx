@@ -141,7 +141,8 @@ export default function MatchPage() {
   const submitThrow = async () => {
     if (!selectedMatch || !currentLeg || dartScores.length === 0) return;
 
-    const totalScore = dartScores.reduce((sum, score) => sum + score, 0);
+    // Calculate total score from all darts
+    const totalScore = dartScores.reduce((sum, score) => sum + (score > 0 ? score : 0), 0);
     const playerId = currentLeg.currentPlayer;
 
     try {
@@ -151,9 +152,9 @@ export default function MatchPage() {
         body: JSON.stringify({
           playerId,
           score: totalScore,
-          dart1: dartScores[0] || null,
-          dart2: dartScores[1] || null,
-          dart3: dartScores[2] || null,
+          dart1: dartScores[0] || 0,
+          dart2: dartScores[1] || 0,
+          dart3: dartScores[2] || 0,
         }),
       });
 
@@ -333,23 +334,40 @@ export default function MatchPage() {
         <div className="bg-gray-800 rounded-2xl p-8 mb-6">
           <div className="text-center mb-6">
             <div className="text-3xl font-bold mb-2">🎯 {currentPlayer?.name}</div>
-            <div className="text-6xl font-bold text-green-500 mb-4">
-              {currentScore}
+            <div className="text-5xl font-bold text-white mb-2">
+              Huidige Score: {currentPlayerScore}
             </div>
-            <div className="text-2xl text-gray-400">
-              Nog: {(currentPlayerScore || 0) - currentScore}
-            </div>
+            
+            {/* Beurt Info */}
+            {dartScores.length > 0 && (
+              <>
+                <div className="text-6xl font-bold text-green-500 my-4">
+                  Deze beurt: {dartScores.reduce((sum, score) => sum + (score > 0 ? score : 0), 0)}
+                </div>
+                <div className="text-3xl text-orange-400 font-bold">
+                  Resterend: {currentPlayerScore - dartScores.reduce((sum, score) => sum + (score > 0 ? score : 0), 0)}
+                </div>
+              </>
+            )}
+            {dartScores.length === 0 && (
+              <div className="text-2xl text-gray-400 my-4">
+                Voer 3 darts in voor deze beurt
+              </div>
+            )}
           </div>
 
+          {/* Dart Display */}
           <div className="flex justify-center gap-4 mb-6">
             {dartScores.map((score, index) => (
-              <div key={index} className="w-20 h-20 btn-glass-primary rounded-full flex items-center justify-center text-3xl font-bold">
-                {score}
+              <div key={index} className="w-24 h-24 btn-glass-primary rounded-xl flex flex-col items-center justify-center">
+                <div className="text-sm text-gray-300">Dart {index + 1}</div>
+                <div className="text-3xl font-bold">{score > 0 ? score : 'Miss'}</div>
               </div>
             ))}
             {Array.from({ length: 3 - dartScores.length }).map((_, index) => (
-              <div key={`empty-${index}`} className="w-20 h-20 btn-glass rounded-full flex items-center justify-center text-3xl">
-                -
+              <div key={`empty-${index}`} className="w-24 h-24 btn-glass rounded-xl flex flex-col items-center justify-center">
+                <div className="text-sm text-gray-400">Dart {dartScores.length + index + 1}</div>
+                <div className="text-3xl text-gray-600">-</div>
               </div>
             ))}
           </div>
@@ -357,7 +375,8 @@ export default function MatchPage() {
           <div className="flex gap-4">
             <button
               onClick={clearDarts}
-              className="flex-1 btn-glass-danger py-6 rounded-xl font-bold text-2xl"
+              disabled={dartScores.length === 0}
+              className="flex-1 btn-glass-danger py-6 rounded-xl font-bold text-2xl disabled:opacity-30 disabled:cursor-not-allowed"
             >
               ❌ Wissen
             </button>
@@ -366,7 +385,7 @@ export default function MatchPage() {
               disabled={dartScores.length === 0}
               className="flex-1 btn-glass-primary py-6 rounded-xl font-bold text-2xl disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              ✅ Bevestigen
+              ✅ Bevestig Beurt ({dartScores.length}/3)
             </button>
           </div>
         </div>
