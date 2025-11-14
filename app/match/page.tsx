@@ -276,7 +276,6 @@ export default function MatchPage() {
   }
 
   // Score entry screen
-  const currentScore = dartScores.reduce((sum, score) => sum + score, 0);
   const isPlayer1Turn = currentLeg?.currentPlayer === selectedMatch?.player1?.id;
   const currentPlayer = isPlayer1Turn ? selectedMatch?.player1 : selectedMatch?.player2;
   const currentPlayerScore = isPlayer1Turn ? currentLeg?.player1Score : currentLeg?.player2Score;
